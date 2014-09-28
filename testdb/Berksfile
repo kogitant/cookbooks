@@ -1,3 +1,4 @@
 source "https://supermarket.getchef.com"
+cookbook 'openmq', '0.1.0', github: 'kogitant/openmq-cookbook', protocol: 'ssh'
 
 metadata

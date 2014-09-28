@@ -9,8 +9,9 @@
 include_recipe "apt"
 include_recipe "postgresql::server"
 include_recipe "database::postgresql"
-include_recipe "mongodb::default"
-
+include_recipe "mongodb"
+include_recipe "openmq"
+	
 postgresql_connection_info = {:host => "localhost",
                               :port => node['postgresql']['config']['port'],
                               :username => 'postgres',
