@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.require_version ">= 1.5.0"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  config.vm.hostname = "sonarapp-berkshelf"
+
+  # Set the version of chef to install using the vagrant-omnibus plugin
+  config.omnibus.chef_version = :latest
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "precise64"
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+  # Assign this VM to a host-only network IP, allowing you to access it
+  # via the IP. Host-only networks can talk to the host machine as well as
+  # any other machines on the same network, but cannot be accessed (through this
+  # network interface) by any external networks.
+  config.vm.network :private_network, ip: "192.168.101.102"
+
+  # Enabling the Berkshelf plugin. To enable this globally, add this configuration
+  # option to your ~/.vagrant.d/Vagrantfile file
+  config.berkshelf.enabled = true
+
+  config.vm.provision :chef_solo do |chef|
+    chef.json = {
+        "postgresql" => {
+            "password" => {
+            	# P0stgres, generated with echo -n 'P0stgres''postgres' | openssl md5 | sed -e 's/.* /md5/'
+                "postgres" => '0083730c8c6487ace550d321a6cb010d'
+            },
+			"config" => { 
+		      "ssl" => 'false',
+		      "listen_addresses" => "localhost,192.168.101.102"
+			},            
+			"pg_hba" => [
+			  	{"type" => 'host', "db" => 'sonar', "user" => 'sonar', "addr" => '192.168.0.0/16', :method => 'md5'},
+			  	{"type" => 'host', "db" => 'sonar', "user" => 'sonar', "addr" => '127.0.0.1/32', :method => 'md5'},
+			  	{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '127.0.0.1/32', :method => 'md5'},
+			  	{"type" => 'host', "db" => 'all', "user" => 'postgres', "addr" => '127.0.0.1/32', :method => 'trust'},
+			  	{"type" => 'local', "db" => 'all', "user" => 'postgres', "addr" => nil, :method => 'trust'}
+			]	
+	    },
+		"java" => {
+			"install_flavor" => "oracle",
+			"jdk_version" => "7",
+			"oracle" => {
+				"accept_oracle_download_terms" => true
+			}
+		},
+		"sonar" => {
+		    "web_host" => "192.168.101.102",
+		    "web_port" => "9000",
+		    "web_context" => "/sonar",
+		    "jdbc_username" => "sonar",
+		    "jdbc_password" => "sonar",
+		    "jdbc_url" => "jdbc:postgresql://192.168.101.102:5432/sonar"
+        }
+    }
+
+    chef.run_list = [
+        "recipe[sonarapp::default]"
+    ]
+  end
+end
