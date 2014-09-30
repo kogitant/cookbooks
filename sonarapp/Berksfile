@@ -1,6 +1,6 @@
 ENV['BERKSHELF_PATH'] = "D:\.berkshelf"
 source "https://supermarket.getchef.com"
 
-cookbook 'chef-sonar', '0.5.0', github: 'kogitant/chef-sonar', protocol: 'ssh'
+cookbook 'chef-sonar', '0.7.0', github: 'kogitant/chef-sonar', protocol: 'ssh'
 
 metadata
