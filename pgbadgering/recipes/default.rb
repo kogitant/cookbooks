@@ -1,17 +1,17 @@
 #
-# Cookbook Name:: testdb
+# Cookbook Name:: pgbadgering
 # Recipe:: default
 #
-# Copyright 2014, YOUR_COMPANY_NAME
-#
-# All rights reserved - Do Not Redistribute
+# Copyright 2014, Antti Koivisto
 #
 include_recipe "apt"
+include_recipe "pgbadgering::locales"
+
+ENV["LANGUAGE"] = ENV["LANG"] = ENV["LC_ALL"] = "fi_FI.UTF-8"
+
 include_recipe "postgresql::server"
 include_recipe "database::postgresql"
-include_recipe "mongodb"
-include_recipe "java"
-include_recipe "openmq"
+include_recipe "chef-pgbadger-latest::default"
 	
 postgresql_connection_info = {:host => "localhost",
                               :port => node['postgresql']['config']['port'],
@@ -27,5 +27,11 @@ end
 postgresql_database 'test' do
   connection postgresql_connection_info
   owner 'test'
+  encoding 'UTF-8'
   action :create
+end
+
+
+apt_package "screen" do
+    action :install
 end

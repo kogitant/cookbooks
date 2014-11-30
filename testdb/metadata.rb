@@ -10,4 +10,5 @@ depends 	"apt"
 depends 	"postgres"  
 depends 	"database"
 depends 	"mongodb"
+depends 	"java"
 depends 	"openmq", 	'>= 0.2.0'

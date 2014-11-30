@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  config.vm.hostname = "testdb-berkshelf"
+  config.vm.hostname = "pgbadgering-berkshelf"
 
   # Set the version of chef to install using the vagrant-omnibus plugin
   config.omnibus.chef_version = :latest
@@ -23,11 +23,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # doesn't already exist on the user's system.
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
+  config.vm.provider :virtualbox do |virtualbox|
+        # allocate 1024 mb RAM
+        virtualbox.customize ["modifyvm", :id, "--memory", "1024"]
+        # allocate max 50% CPU
+        virtualbox.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+  end
+
   # Assign this VM to a host-only network IP, allowing you to access it
   # via the IP. Host-only networks can talk to the host machine as well as
   # any other machines on the same network, but cannot be accessed (through this
   # network interface) by any external networks.
-  config.vm.network :private_network, ip: "192.168.101.101"
+  config.vm.network :private_network, ip: "192.168.101.103"
 
   # Enabling the Berkshelf plugin. To enable this globally, add this configuration
   # option to your ~/.vagrant.d/Vagrantfile file
@@ -41,25 +48,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 "postgres" => '0083730c8c6487ace550d321a6cb010d'
             },
 			"config" => { 
-		      "ssl" => 'false'
+		      "ssl" => 'false',
+		      "listen_addresses" => "localhost,192.168.101.102"
 			},            
 			"pg_hba" => [
 			  	{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '127.0.0.1/32', :method => 'md5'},
 			  	{"type" => 'host', "db" => 'all', "user" => 'postgres', "addr" => '127.0.0.1/32', :method => 'trust'},
 			  	{"type" => 'local', "db" => 'all', "user" => 'postgres', "addr" => nil, :method => 'trust'}
 			]	
-	    },
-	    "java" => {
-	    	"install_flavor" => "oracle",
-	    	"jdk_version" => "7",
-		    "oracle" => {
-		      "accept_oracle_download_terms" => true
-		    }
 	    }
     }
 
     chef.run_list = [
-        "recipe[testdb::default]"
+        "recipe[pgbadgering::default]"
     ]
   end
 end
