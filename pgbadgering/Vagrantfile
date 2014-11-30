@@ -49,7 +49,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             	},
 		"config" => { 
 		      	"ssl" => 'false',
-		      	"listen_addresses" => "localhost,192.168.101.102",
+		      	"listen_addresses" => "localhost,192.168.101.103",
 			"log_line_prefix" => '%t [%p]: [%l-1] user=%u,db=%d,client=%h ',
 			"log_checkpoints" => "on",
 			"log_connections" => "on",
@@ -60,6 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			"log_min_duration_statement" => "0"
 		},            
 		"pg_hba" => [
+			{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '192.168.0.0/16', :method => 'md5'},
 			{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '127.0.0.1/32', :method => 'md5'},
 			{"type" => 'host', "db" => 'all', "user" => 'postgres', "addr" => '127.0.0.1/32', :method => 'trust'},
 			{"type" => 'local', "db" => 'all', "user" => 'postgres', "addr" => nil, :method => 'trust'}
