@@ -43,19 +43,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :chef_solo do |chef|
     chef.json = {
         "postgresql" => {
-            "password" => {
-            	# P0stgres, generated with echo -n 'P0stgres''postgres' | openssl md5 | sed -e 's/.* /md5/'
-                "postgres" => '0083730c8c6487ace550d321a6cb010d'
-            },
-			"config" => { 
-		      "ssl" => 'false',
-		      "listen_addresses" => "localhost,192.168.101.102"
-			},            
-			"pg_hba" => [
-			  	{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '127.0.0.1/32', :method => 'md5'},
-			  	{"type" => 'host', "db" => 'all', "user" => 'postgres', "addr" => '127.0.0.1/32', :method => 'trust'},
-			  	{"type" => 'local', "db" => 'all', "user" => 'postgres', "addr" => nil, :method => 'trust'}
-			]	
+            	"password" => {
+            		# P0stgres, generated with echo -n 'P0stgres''postgres' | openssl md5 | sed -e 's/.* /md5/'
+                	"postgres" => '0083730c8c6487ace550d321a6cb010d'
+            	},
+		"config" => { 
+		      	"ssl" => 'false',
+		      	"listen_addresses" => "localhost,192.168.101.102",
+			"log_line_prefix" => "'%t [%p]: [%l-1] user=%u,db=%d,client=%h '",
+			"log_checkpoints" => "on",
+			"log_connections" => "on",
+			"log_disconnections" => "on",
+			"log_lock_waits" => "on",
+			"log_temp_files" => "0",
+			"log_autovacuum_min_duration" => "0",
+			"log_min_duration_statement" => "0"
+		},            
+		"pg_hba" => [
+			{"type" => 'host', "db" => 'all', "user" => 'test', "addr" => '127.0.0.1/32', :method => 'md5'},
+			{"type" => 'host', "db" => 'all', "user" => 'postgres', "addr" => '127.0.0.1/32', :method => 'trust'},
+			{"type" => 'local', "db" => 'all', "user" => 'postgres', "addr" => nil, :method => 'trust'}
+		]	
 	    }
     }
 
