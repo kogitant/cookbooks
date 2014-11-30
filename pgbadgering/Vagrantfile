@@ -50,7 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		"config" => { 
 		      	"ssl" => 'false',
 		      	"listen_addresses" => "localhost,192.168.101.102",
-			"log_line_prefix" => "'%t [%p]: [%l-1] user=%u,db=%d,client=%h '",
+			"log_line_prefix" => '%t [%p]: [%l-1] user=%u,db=%d,client=%h ',
 			"log_checkpoints" => "on",
 			"log_connections" => "on",
 			"log_disconnections" => "on",
