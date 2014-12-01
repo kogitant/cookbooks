@@ -10,6 +10,7 @@ include_recipe "pgbadgering::locales"
 ENV["LANGUAGE"] = ENV["LANG"] = ENV["LC_ALL"] = "fi_FI.UTF-8"
 
 include_recipe "postgresql::server"
+include_recipe "postgresql::contrib"
 include_recipe "database::postgresql"
 include_recipe "chef-pgbadger-latest::default"
 include_recipe "apache2"
